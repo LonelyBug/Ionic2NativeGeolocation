@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="nativeGeolocation" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>NativeGeolocation</name>
+    <js-module name="NativeGeolocation" src="www/NativeGeolocation.js">
+        <clobbers target="cordova.plugins.NativeGeolocation" />
+    </js-module>
+    <platform name="android">
+      <config-file parent="/*" target="res/xml/config.xml">
+        <feature name="NativeGeolocation">
+          <param name="android-package" value="com.sx.family.GPSActivity"/>
+        </feature>
+      </config-file>
+      <source-file src="src/android/GPSActivity.java" target-dir="src/com/sx/family/cordova"/>
+      <config-file target="AndroidManifest.xml" parent="/*">
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+      </config-file>
+    </platform>
+</plugin>
