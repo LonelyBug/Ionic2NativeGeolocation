@@ -2,6 +2,8 @@ package com.sx.family;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -66,19 +68,19 @@ private static final String STOP_ACTION = "stop";
 
 	public Location startGpsLocation() {
 		String serviceName = Context.LOCATION_SERVICE;
-		locationManager = (LocationManager) GPSActivity.this.getSystemService(serviceName);
+		locationManager = (LocationManager) cordova.getActivity().getSystemService(serviceName);
 
 		checkGPSEnabled(locationManager);
 
 		String provider = getProvider(locationManager);
-		Toast.makeText(GPSActivity.this, provider, Toast.LENGTH_LONG).show();
-		Log.i(GPSActivity.this.getPackageName(), "=========当前最好提供位置的服务：" + provider);
+//		Toast.makeText(GPSActivity.this, provider, Toast.LENGTH_LONG).show();
+//		Log.i(GPSActivity.this.getPackageName(), "=========当前最好提供位置的服务：" + provider);
 		if(provider == null){
-			Toast.makeText(GPSActivity.this, "无法定位，请在户外打开GPS", Toast.LENGTH_LONG).show();
+			Toast.makeText(cordova.getActivity(), "无法定位，请在户外打开GPS", Toast.LENGTH_LONG).show();
 			return null;
 		}
 		if(!"gps".equals(provider)){
-			Toast.makeText(GPSActivity.this, "GPS 没有开启", Toast.LENGTH_LONG).show();
+			Toast.makeText(cordova.getActivity(), "GPS 没有开启", Toast.LENGTH_LONG).show();
 		}
 
 		Location location = locationManager.getLastKnownLocation(provider);
@@ -96,7 +98,7 @@ private static final String STOP_ACTION = "stop";
 	private boolean checkGPSEnabled(LocationManager locationManager){
 		boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		if(!gpsEnabled){
-			AlertDialog.Builder builder = new AlertDialog.Builder(GPSActivity.this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(cordova.getActivity());
 			builder.setTitle("提示").setMessage("GPS未开启，是否马上设置？").setPositiveButton("设置", new OnClickListener() {
 
 				@Override
@@ -104,7 +106,7 @@ private static final String STOP_ACTION = "stop";
 					Intent intent = new Intent();
 					intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					GPSActivity.this.startActivity(intent);
+					cordova.getActivity().startActivity(intent);
 				}
 			}).setNegativeButton("取消", null);
 			AlertDialog dialog = builder.create();
@@ -141,7 +143,7 @@ private static final String STOP_ACTION = "stop";
 	}
 
 	private void updateWithNewLocation(Location location) {
-		if (location == null) {
+		if (location == null)
 			return;
 		try{
         JSONObject coords = new JSONObject();
@@ -206,7 +208,7 @@ private static final String STOP_ACTION = "stop";
          */
         public void onProviderEnabled(String provider) {
         	String serviceName = Context.LOCATION_SERVICE;
-        	LocationManager lm = (LocationManager) getSystemService(serviceName);
+        	LocationManager lm = (LocationManager) cordova.getActivity().getSystemService(serviceName);
             Location location=lm.getLastKnownLocation(provider);
             updateWithNewLocation(location);
         }
